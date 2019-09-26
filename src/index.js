@@ -1,12 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import AppRouter from './routers/AppRouter';
-import 'normalize.css/normalize.css';
-import './styles/styles.scss';
+import './styles/index.scss';
 
-const App = <AppRouter />
+import Tetris from './components/Tetris/Tetris';
+
+import 'normalize.css/normalize.css';
+
+const game = <Tetris />
 
 ReactDOM.render(
-	App, 
+	game, 
 	document.getElementById('app')
 );
