@@ -15,6 +15,7 @@ export const useGameStatus = rowsCleared => {
 	}, [level, linePoints, rowsCleared]);
 
 	useEffect(() => {
+		// console.log(rows)
 		calcScore();
 	}, [calcScore, rowsCleared, score]);
 

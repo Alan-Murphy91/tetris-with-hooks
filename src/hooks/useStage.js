@@ -8,7 +8,6 @@ export const useStage = (player, resetPlayer) => {
 
 	useEffect(() => {
 		setRowsCleared(0);
-
 		const sweepRows = newStage =>
 			newStage.reduce((acc, row) => {
 				if (row.findIndex(cell => cell[0] === 0) === -1) {
