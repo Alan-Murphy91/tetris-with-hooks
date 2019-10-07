@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 
+import { useInterval } from '../../hooks/useInterval';
 import { usePlayer } from '../../hooks/usePlayer';
 import { useStage } from '../../hooks/useStage';
+import { useGameStatus } from '../../hooks/useGameStatus';
 
 import Stage from '../Stage/Stage';
 import Display from '../Display/Display';
@@ -16,7 +18,8 @@ const Tetris = () => {
 	const [gameOver, setGameOver] = useState(null);
 
 	const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
-	const [stage, setStage] = useStage(player, resetPlayer)
+	const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
+	const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
 
 	const movePlayer = dir => {
 		if (!checkCollision(player, stage, { x: dir, y: 0})) {
@@ -27,16 +30,23 @@ const Tetris = () => {
 	const startGame = () => {
 		//reset
 		setStage(createStage());
+		setDropTime(1000);
 		resetPlayer();
 		setGameOver(false);
+		setScore(0);
+		setRows(0);
+		setLevel(0);
 	}
 
 	const drop = () => {
+		if (rows > (level + 1) * 10) {
+			setLevel(prev => prev + 1);
+			setDropTime(1000 / (level + 1) + 200);
+		}
 		if (!checkCollision(player, stage, { x: 0, y: 1})) {
 			updatePlayerPos({x: 0, y: 1, collided: false})
 		} else {
 			if (player.pos.y < 1) {
-				console.log('GAME OVER');
 				setGameOver(true);
 				setDropTime(null);
 			}
@@ -44,12 +54,20 @@ const Tetris = () => {
 		}
 	}
 
+	const keyUp = ({ keyCode }) => {
+		if(!gameOver) {
+			if (keyCode === 40) {
+				setDropTime(1000 / (level + 1) + 200);
+			}
+		}
+	}
+
 	const dropPlayer = () => {
+		setDropTime(null);
 		drop();
 	}
 
 	const move = ({ keyCode }) => {
-		console.log(keyCode);
 		if (!gameOver) {
 			if (keyCode === 37) {
 				movePlayer(-1);
@@ -63,9 +81,14 @@ const Tetris = () => {
 		}
 	}
 
+	useInterval(() => {
+		drop();
+	}, dropTime);
+
 	return (
 		<StyledTetrisWrapper
 			onKeyDown={e => move(e)}
+			onKeyUp={keyUp}
 			role="button"
 			tabIndex="0"
 		>
@@ -76,9 +99,9 @@ const Tetris = () => {
 						<Display gameOver={gameOver} text="Game Over" />
 					) : (
 						<>
-							<Display text="Score" />
-							<Display text="Rows" />
-							<Display text="Level" />
+							<Display text={`Score: ${score}`} />
+							<Display text={`Rows: ${rows}`} />
+							<Display text={`Level: ${level}`} />
 						</>
 					)}
 					<StartButton callback={startGame} />
