@@ -11,7 +11,7 @@ import StartButton from '../StartButton/StartButton';
 
 import { createStage, checkCollision } from '../../gameHelpers';
 
-import { StyledTetris, StyledTetrisWrapper } from '../Tetris/StyledTetris';
+import { StyledTetris, StyledTetrisWrapper, StyledAside } from '../Tetris/StyledTetris';
 
 const Tetris = () => {
 	const [dropTime, setDropTime] = useState(null);
@@ -81,7 +81,6 @@ const Tetris = () => {
 	}
 
 	useInterval(() => {
-		console.log(rowsCleared)
 		drop();
 	}, dropTime);
 
@@ -94,7 +93,7 @@ const Tetris = () => {
 		>
 			<StyledTetris>
 				<Stage stage={stage} />
-				<aside>
+				<StyledAside>
 				{gameOver ? (
 						<Display gameOver={gameOver} text="Game Over" />
 					) : (
@@ -105,7 +104,7 @@ const Tetris = () => {
 						</>
 					)}
 					<StartButton callback={startGame} />
-				</aside>
+				</StyledAside>
 			</StyledTetris>
 		</StyledTetrisWrapper>
 	);
