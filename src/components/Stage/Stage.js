@@ -7,7 +7,13 @@ import { StyledStage } from './StyledStage';
 const Stage = ({ stage }) => {
 	return (
 		<StyledStage width={stage[0].length} height={stage.length}>
-			{stage.map(row => row.map((cell, x) => <Cell key={x} type={cell[0]} />))}
+			{stage.map(row => row.map((cell, x) => 
+				<Cell 
+					key={x} 
+					type={cell[0]} 
+					ghost={cell[2] ? true : false}
+				/>)
+			)}
 		</StyledStage>
 	);
 };
