@@ -9,19 +9,21 @@ export const useStage = (player, resetPlayer) => {
 
 	const mergeCoords = {};
 
-	const sweepRows = newStage =>
-		newStage.reduce((acc, row) => {
-			if (row.findIndex(cell => cell[0] === 0) === -1) {
-				setRowsCleared(prev => prev + 1);
-				acc.unshift(new Array(newStage[0].length).fill([0, 'clear']));
-				return acc;
-			}
-			acc.push(row);
-			return acc;
-	}, []);
+	const buildTetromino = (tetromino, stage, coordY, coordX, ghostY = 0) =>
+		tetromino.forEach((row, y) => {
+			row.forEach((value, x) => {
+				if(value !== 0) {
+					stage[coordY + y + ghostY][coordX + x] = [
+						value,
+						`${player.collided ? 'merged' : 'clear'}`,
+						ghostY > 0 ? 'ghost' : '',
+					];
+				}
+			});
+		});
 
-	const updateStage = prevStage => {
-		const newStage = prevStage.map((row, y) =>
+	const buildStage = template =>
+		template.map((row, y) =>
 			row.map((cell, x) => {
 				if (cell[1] === 'clear') {
 					return [0, 'clear'];
@@ -35,19 +37,26 @@ export const useStage = (player, resetPlayer) => {
 				}
 			})
 		);
-		player.tetromino.forEach((row, y) => {
-			row.forEach((value, x) => {
-				if(value !== 0) {
-					newStage[y + player.pos.y][x + player.pos.x] = [
-						value,
-						`${player.collided ? 'merged' : 'clear'}`,
-					];
-				}
-			});
-		});
 
-		let iter = newStage.length - player.tetromino.length;
-		for (let i = iter; i > player.pos.y; i -= 1) {
+	const sweepRows = newStage =>
+		newStage.reduce((acc, row) => {
+			if (row.findIndex(cell => cell[0] === 0) === -1) {
+				setRowsCleared(prev => prev + 1);
+				acc.unshift(new Array(newStage[0].length).fill([0, 'clear']));
+				return acc;
+			}
+			acc.push(row);
+			return acc;
+	}, []);
+
+	const updateStage = prevStage => {
+		const newStage = buildStage(prevStage);
+		
+		buildTetromino(
+			player.tetromino, newStage, player.pos.y, player.pos.x
+		);
+
+		for (let i = newStage.length - player.tetromino.length; i > player.pos.y; i -= 1) {
 			const clonedPlayer = JSON.parse(JSON.stringify(player));
 			clonedPlayer.pos.y = 0;
 			
@@ -56,17 +65,9 @@ export const useStage = (player, resetPlayer) => {
 					if((i + clonedPlayer.pos.y - player.pos.y) <= 2) {
 						break;
 					}
-					player.tetromino.forEach((row, y) => {
-						row.forEach((value, x) => {
-							if(value !== 0) {
-								newStage[i + y + clonedPlayer.pos.y][x + player.pos.x] = [
-									value,
-									'clear',
-									'ghost'
-								];
-							}
-						});
-					});
+					buildTetromino(
+						player.tetromino, newStage, clonedPlayer.pos.y, player.pos.x, i
+					);
 					break;
 				}
 			}

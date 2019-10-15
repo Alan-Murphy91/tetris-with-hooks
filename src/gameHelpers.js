@@ -26,7 +26,6 @@ export const ghostTetrominoIsHigherThanMerge = (player, mergeCoords, moveY) => {
 	for (let y = 0; y < player.tetromino.length; y += 1) {
 		for (let x = 0; x < player.tetromino[y].length; x += 1) {
 			if (player.tetromino[y][x] !== 0) {
-				console.log(player.pos.x + x, player.pos.y + y + moveY, mergeCoords);
 				if (Object.prototype.hasOwnProperty.call(mergeCoords, (player.pos.x + x).toString())) {
 					for (let i = 0; i < mergeCoords[player.pos.x + x].length; i += 1) {
 						if (mergeCoords[player.pos.x + x][i] < player.pos.y + y + moveY) {
