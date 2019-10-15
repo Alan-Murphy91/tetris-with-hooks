@@ -43,11 +43,13 @@ export const useStage = (player, resetPlayer) => {
 
 		let iter = newStage.length - player.tetromino.length;
 		for (let i = iter; i > player.pos.y; i -= 1) {
-			if (!checkCollision(player, newStage, {x: 0, y: i })) {
+			const clonedPlayer = JSON.parse(JSON.stringify(player));
+			clonedPlayer.pos.y = 0;
+			if (!checkCollision(clonedPlayer, newStage, {x: 0, y: i })) {
 				player.tetromino.forEach((row, y) => {
 					row.forEach((value, x) => {
 						if(value !== 0) {
-							newStage[i + y + player.pos.y][x + player.pos.x] = [
+							newStage[i + y + clonedPlayer.pos.y][x + player.pos.x] = [
 								value,
 								'clear',
 								'ghost'
