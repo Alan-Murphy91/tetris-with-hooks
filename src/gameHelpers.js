@@ -22,24 +22,21 @@ export const checkCollision = (player, stage, { x: moveX, y: moveY}) => {
 	}
 }
 
-// export const checkCollisionWithGhost = (player, stage, { x: moveX, y: moveY}, mergeCoords, iter) => {
-// 	for (let y = 0; y < player.tetromino.length; y += 1) {
-// 		for (let x = 0; x < player.tetromino[y].length; x += 1) {
-// 			for (let i = 0; i < mergeCoords.length; i += 1) {
-// 				console.log(x,y, mergeCoords);
-// 				if (mergeCoords[i][0] < y + iter && mergeCoords[i][1] === x) {
-// 					return false;
-// 				}
-// 			}
-// 			if (player.tetromino[y][x] !== 0) {
-// 				if (
-// 					!stage[y + player.pos.y + moveY] ||
-// 					!stage[y + player.pos.y + moveY][x + player.pos.x + moveX] ||
-// 					stage[y + player.pos.y + moveY][x + player.pos.x + moveX][1] !== 'clear'
-// 				) {
-// 					return true;
-// 				}
-// 			}
-// 		}
-// 	}
-// }
+export const ghostTetrominoIsHigherThanMerge = (player, mergeCoords, moveY) => {
+	for (let y = 0; y < player.tetromino.length; y += 1) {
+		for (let x = 0; x < player.tetromino[y].length; x += 1) {
+			if (player.tetromino[y][x] !== 0) {
+				console.log(player.pos.x + x, player.pos.y + y + moveY, mergeCoords);
+				if (Object.prototype.hasOwnProperty.call(mergeCoords, (player.pos.x + x).toString())) {
+					for (let i = 0; i < mergeCoords[player.pos.x + x].length; i += 1) {
+						if (mergeCoords[player.pos.x + x][i] < player.pos.y + y + moveY) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+	}
+	return true;
+}
+
