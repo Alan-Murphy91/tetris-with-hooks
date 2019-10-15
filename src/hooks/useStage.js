@@ -46,6 +46,9 @@ export const useStage = (player, resetPlayer) => {
 			const clonedPlayer = JSON.parse(JSON.stringify(player));
 			clonedPlayer.pos.y = 0;
 			if (!checkCollision(clonedPlayer, newStage, {x: 0, y: i })) {
+				if((i + clonedPlayer.pos.y - player.pos.y) <= 2) {
+					break;
+				}
 				player.tetromino.forEach((row, y) => {
 					row.forEach((value, x) => {
 						if(value !== 0) {

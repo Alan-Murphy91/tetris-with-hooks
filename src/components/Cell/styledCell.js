@@ -12,9 +12,9 @@ export const StyledCell = styled.div`
 	border-left-color: rgba(${props => props.color}, 0.3);
 
 	background: ${props => (
-		props.ghost ? 'black !important' : ''
+		props.ghost ? 'black' : ''
 	)}
 	border: ${props => (
-		props.ghost ? '1px solid blue !important' : ''
+		props.ghost ? '1px solid blue' : ''
 	)}
 `
