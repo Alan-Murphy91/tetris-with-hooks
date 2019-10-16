@@ -22,13 +22,13 @@ export const checkCollision = (player, stage, { x: moveX, y: moveY}) => {
 	}
 }
 
-export const ghostTetrominoIsHigherThanMerge = (player, mergeCoords, moveY) => {
+export const ghostTetrominoIsHigherThanMerge = (player, merges, moveY) => {
 	for (let y = 0; y < player.tetromino.length; y += 1) {
 		for (let x = 0; x < player.tetromino[y].length; x += 1) {
 			if (player.tetromino[y][x] !== 0) {
-				if (Object.prototype.hasOwnProperty.call(mergeCoords, (player.pos.x + x).toString())) {
-					for (let i = 0; i < mergeCoords[player.pos.x + x].length; i += 1) {
-						if (mergeCoords[player.pos.x + x][i] < player.pos.y + y + moveY) {
+				if (Object.prototype.hasOwnProperty.call(merges, (player.pos.x + x).toString())) {
+					for (let i = 0; i < merges[player.pos.x + x].length; i += 1) {
+						if (merges[player.pos.x + x][i] < player.pos.y + y + moveY) {
 							return false;
 						}
 					}
@@ -39,3 +39,27 @@ export const ghostTetrominoIsHigherThanMerge = (player, mergeCoords, moveY) => {
 	return true;
 }
 
+export const snapTetromino = (stage, player, merges) => {
+	for (let i = stage.length - player.tetromino.length; i > player.pos.y; i -= 1) {
+		const clonedPlayer = JSON.parse(JSON.stringify(player));
+		clonedPlayer.pos.y = 0;
+		
+		if (!checkCollision(clonedPlayer, stage, {x: 0, y: i })) {
+			if (ghostTetrominoIsHigherThanMerge(clonedPlayer, merges, i)) {
+				return (i - player.pos.y);
+			}
+		}
+	}
+}
+
+//There should be a better way of going about this..
+// export const adjustGhostForEmptyTetrominoArray = (tetromino, yCoord, xCoord, merges) => {
+// 	tetromino.shift();
+// 	let adjustment = 0;
+// 	for (let i = 0; i < tetromino.length; i += 1) {
+// 		if (tetromino[i].findIndex(el => el !== 0) === -1) {
+// 			adjustment += 1;
+// 		}
+// 	}
+// 	return adjustment;	
+// }

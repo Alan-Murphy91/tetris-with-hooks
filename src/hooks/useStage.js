@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 
-import { createStage, checkCollision, ghostTetrominoIsHigherThanMerge } from '../gameHelpers';
-
+import { 
+	createStage, checkCollision, ghostTetrominoIsHigherThanMerge,
+	adjustGhostForEmptyTetrominoArray
+} from '../gameHelpers';
 
 export const useStage = (player, resetPlayer) => {
 	const [stage, setStage] = useState(createStage());
 	const [rowsCleared, setRowsCleared] = useState(0);
-
-	const mergeCoords = {};
+	const [merges, setMerges] = useState({});
 
 	const buildTetromino = (tetromino, stage, coordY, coordX, ghostY = 0) =>
 		tetromino.forEach((row, y) => {
@@ -28,10 +29,16 @@ export const useStage = (player, resetPlayer) => {
 				if (cell[1] === 'clear') {
 					return [0, 'clear'];
 				} else {
-					if (Object.prototype.hasOwnProperty.call(mergeCoords, x.toString())) {
-						mergeCoords[x.toString()] = [...mergeCoords[x.toString()], y];
+					if (Object.prototype.hasOwnProperty.call(merges, x.toString())) {
+						setMerges(prev => ({
+							...prev,
+							[x.toString()]: [...merges[x.toString()], y],
+						}));
 					} else {
-						mergeCoords[x.toString()] = [y];
+						setMerges(prev => ({
+							...prev,
+							[x.toString()]: [y],
+						}));
 					}
 					return cell;
 				}
@@ -61,11 +68,13 @@ export const useStage = (player, resetPlayer) => {
 			clonedPlayer.pos.y = 0;
 			
 			if (!checkCollision(clonedPlayer, newStage, {x: 0, y: i })) {
-				if (ghostTetrominoIsHigherThanMerge(clonedPlayer, mergeCoords, i)) {
+				if (ghostTetrominoIsHigherThanMerge(clonedPlayer, merges, i)) {
 					if((i + clonedPlayer.pos.y - player.pos.y) <= 2) {
 						break;
 					}
+					// const adjustment = adjustGhostForEmptyTetrominoArray(clonedPlayer.tetromino, clonedPlayer.pos.y, clonedPlayer.pos.x, merges);
 					buildTetromino(
+						// player.tetromino, newStage, clonedPlayer.pos.y + adjustment, player.pos.x, i
 						player.tetromino, newStage, clonedPlayer.pos.y, player.pos.x, i
 					);
 					break;
@@ -85,5 +94,5 @@ export const useStage = (player, resetPlayer) => {
 		setStage(prev => updateStage(prev))
 	}, [player]);
 
-	return [stage, setStage, rowsCleared];
+	return [stage, setStage, rowsCleared, merges];
 };

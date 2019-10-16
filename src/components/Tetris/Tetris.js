@@ -5,11 +5,12 @@ import { usePlayer } from '../../hooks/usePlayer';
 import { useStage } from '../../hooks/useStage';
 import { useGameStatus } from '../../hooks/useGameStatus';
 
+import TetrisResponsiveButtons from './TetrisResponsiveButtons';
 import Stage from '../Stage/Stage';
 import Display from '../Display/Display';
 import StartButton from '../StartButton/StartButton';
 
-import { createStage, checkCollision } from '../../gameHelpers';
+import { createStage, checkCollision, snapTetromino, adjustGhostForEmptyTetrominoArray } from '../../gameHelpers';
 
 import { StyledTetris, StyledTetrisWrapper, StyledAside } from '../Tetris/StyledTetris';
 
@@ -18,13 +19,8 @@ const Tetris = () => {
 	const [gameOver, setGameOver] = useState(null);
 
 	const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
-	const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
+	const [stage, setStage, rowsCleared, merges] = useStage(player, resetPlayer);
 	const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
-	const movePlayer = dir => {
-		if (!checkCollision(player, stage, { x: dir, y: 0})) {
-			updatePlayerPos({x: dir, y: 0});
-		}
-	}
 
 	const startGame = () => {
 		//reset
@@ -35,6 +31,12 @@ const Tetris = () => {
 		setScore(0);
 		setRows(0);
 		setLevel(0);
+	}
+
+	const movePlayer = dir => {
+		if (!checkCollision(player, stage, { x: dir, y: 0})) {
+			updatePlayerPos({x: dir, y: 0});
+		}
 	}
 
 	const drop = () => {
@@ -76,6 +78,8 @@ const Tetris = () => {
 				dropPlayer();
 			} else if (keyCode === 38) {
 				playerRotate(stage, 1);
+			} else if (keyCode === 32) {
+				updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true})
 			}
 		}
 	}
@@ -91,6 +95,15 @@ const Tetris = () => {
 			role="button"
 			tabIndex="0"
 		>
+			<TetrisResponsiveButtons 
+				player={player}
+				stage={stage}
+				dir={-1} 
+				movePlayer={movePlayer} 
+				playerRotate={playerRotate}
+				updatePlayerPos={updatePlayerPos}
+				merges={merges}
+			/>
 			<StyledTetris>
 				<Stage stage={stage} />
 				<StyledAside>
@@ -106,7 +119,16 @@ const Tetris = () => {
 					<StartButton callback={startGame} />
 				</StyledAside>
 			</StyledTetris>
-		</StyledTetrisWrapper>
+			<TetrisResponsiveButtons 
+				player={player}
+				stage={stage}
+				dir={1} 
+				movePlayer={movePlayer} 
+				playerRotate={playerRotate}
+				updatePlayerPos={updatePlayerPos}
+				merges={merges}
+			/>		
+			</StyledTetrisWrapper>
 	);
 };
 
