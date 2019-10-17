@@ -21,6 +21,10 @@ export const StyledTetrisResponsiveButtonWrapper = styled.div`
 		color: white;
 		border: 1px solid red;
 	}
+
+	@media (min-width: 1025px) {
+		display: none;
+	}
 `
 
 export const StyledTetris = styled.div`

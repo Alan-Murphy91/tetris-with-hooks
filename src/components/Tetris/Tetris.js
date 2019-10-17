@@ -21,7 +21,7 @@ const Tetris = () => {
 	const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
 	const [stage, setStage, rowsCleared, merges] = useStage(player, resetPlayer);
 	const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
-
+	
 	const startGame = () => {
 		//reset
 		setStage(createStage());

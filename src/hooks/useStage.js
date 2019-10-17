@@ -9,11 +9,12 @@ export const useStage = (player, resetPlayer) => {
 	const [stage, setStage] = useState(createStage());
 	const [rowsCleared, setRowsCleared] = useState(0);
 	const [merges, setMerges] = useState({});
+	let mergeEntity = {};
 
 	const buildTetromino = (tetromino, stage, coordY, coordX, ghostY = 0) =>
 		tetromino.forEach((row, y) => {
 			row.forEach((value, x) => {
-				if(value !== 0) {
+				if(value !== 0 && !isNaN(coordY)) {
 					stage[coordY + y + ghostY][coordX + x] = [
 						value,
 						`${player.collided ? 'merged' : 'clear'}`,
@@ -23,27 +24,36 @@ export const useStage = (player, resetPlayer) => {
 			});
 		});
 
-	const buildStage = template =>
-		template.map((row, y) =>
+	const buildStage = template => {
+		let mergeEntity = {};
+		const newTemplate = template.map((row, y) =>
 			row.map((cell, x) => {
 				if (cell[1] === 'clear') {
 					return [0, 'clear'];
 				} else {
-					if (Object.prototype.hasOwnProperty.call(merges, x.toString())) {
-						setMerges(prev => ({
-							...prev,
-							[x.toString()]: [...merges[x.toString()], y],
-						}));
+					if (Object.prototype.hasOwnProperty.call(mergeEntity, x.toString())) {
+						mergeEntity = {
+							...mergeEntity,
+							[x.toString()]: [...mergeEntity[x.toString()] ,y],
+						};
+						setMerges({
+							...mergeEntity,
+						});
 					} else {
-						setMerges(prev => ({
-							...prev,
+						mergeEntity = {
+							...mergeEntity,
 							[x.toString()]: [y],
-						}));
+						};
+						setMerges({
+							...mergeEntity,
+						});
 					}
 					return cell;
 				}
 			})
 		);
+		return newTemplate;
+	}
 
 	const sweepRows = newStage =>
 		newStage.reduce((acc, row) => {
@@ -58,7 +68,6 @@ export const useStage = (player, resetPlayer) => {
 
 	const updateStage = prevStage => {
 		const newStage = buildStage(prevStage);
-		
 		buildTetromino(
 			player.tetromino, newStage, player.pos.y, player.pos.x
 		);
@@ -72,7 +81,7 @@ export const useStage = (player, resetPlayer) => {
 					if((i + clonedPlayer.pos.y - player.pos.y) <= 2) {
 						break;
 					}
-					// const adjustment = adjustGhostForEmptyTetrominoArray(clonedPlayer.tetromino, clonedPlayer.pos.y, clonedPlayer.pos.x, merges);
+					// const adjustment = adjustGhostForEmptyTetrominoArray(clonedPlayer.tetromino, clonedPlayer.pos.y, clonedPlayer.pos.x, merges, i);
 					buildTetromino(
 						// player.tetromino, newStage, clonedPlayer.pos.y + adjustment, player.pos.x, i
 						player.tetromino, newStage, clonedPlayer.pos.y, player.pos.x, i
