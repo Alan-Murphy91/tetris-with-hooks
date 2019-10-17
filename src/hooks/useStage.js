@@ -9,7 +9,6 @@ export const useStage = (player, resetPlayer) => {
 	const [stage, setStage] = useState(createStage());
 	const [rowsCleared, setRowsCleared] = useState(0);
 	const [merges, setMerges] = useState({});
-	let mergeEntity = {};
 
 	const buildTetromino = (tetromino, stage, coordY, coordX, ghostY = 0) =>
 		tetromino.forEach((row, y) => {
@@ -81,7 +80,8 @@ export const useStage = (player, resetPlayer) => {
 					if((i + clonedPlayer.pos.y - player.pos.y) <= 2) {
 						break;
 					}
-					// const adjustment = adjustGhostForEmptyTetrominoArray(clonedPlayer.tetromino, clonedPlayer.pos.y, clonedPlayer.pos.x, merges, i);
+					console.log(i);
+					// const adjustment = adjustGhostForEmptyTetrominoArray(clonedPlayer.tetromino, i);
 					buildTetromino(
 						// player.tetromino, newStage, clonedPlayer.pos.y + adjustment, player.pos.x, i
 						player.tetromino, newStage, clonedPlayer.pos.y, player.pos.x, i
@@ -103,5 +103,5 @@ export const useStage = (player, resetPlayer) => {
 		setStage(prev => updateStage(prev))
 	}, [player]);
 
-	return [stage, setStage, rowsCleared, merges];
+	return [stage, setStage, rowsCleared, merges, setMerges];
 };

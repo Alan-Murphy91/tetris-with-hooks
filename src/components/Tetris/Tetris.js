@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { useInterval } from '../../hooks/useInterval';
 import { usePlayer } from '../../hooks/usePlayer';
@@ -19,7 +19,7 @@ const Tetris = () => {
 	const [gameOver, setGameOver] = useState(null);
 
 	const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
-	const [stage, setStage, rowsCleared, merges] = useStage(player, resetPlayer);
+	const [stage, setStage, rowsCleared, merges, setMerges] = useStage(player, resetPlayer);
 	const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
 	
 	const startGame = () => {
@@ -31,6 +31,7 @@ const Tetris = () => {
 		setScore(0);
 		setRows(0);
 		setLevel(0);
+		setMerges({});
 	}
 
 	const movePlayer = dir => {
@@ -80,9 +81,17 @@ const Tetris = () => {
 				playerRotate(stage, 1);
 			} else if (keyCode === 32) {
 				updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true})
+				// console.log('ss',player.tetromino.length, player.pos.y)
 			}
 		}
 	}
+
+	// useEffect(() => {
+		// console.log('Player', player);
+		// console.log(adjustGhostForEmptyTetrominoArray(player.tetromino, player.pos.y));
+		// updatePlayerPos({x: 0, y: 0, collided: true})
+
+	// }, [player]); 
 
 	// useInterval(() => {
 	// 	drop();

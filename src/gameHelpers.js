@@ -26,7 +26,6 @@ export const ghostTetrominoIsHigherThanMerge = (player, merges, moveY) => {
 	for (let y = 0; y < player.tetromino.length; y += 1) {
 		for (let x = 0; x < player.tetromino[y].length; x += 1) {
 			if (player.tetromino[y][x] !== 0) {
-				// console.log(player.pos.x + x, player.pos.y + y, merges);
 				if (Object.prototype.hasOwnProperty.call(merges, (player.pos.x + x).toString())) {
 					for (let i = 0; i < merges[player.pos.x + x].length; i += 1) {
 						if (merges[player.pos.x + x][i] < player.pos.y + y + moveY) {
@@ -54,8 +53,7 @@ export const snapTetromino = (stage, player, merges) => {
 }
 
 // There should be a better way of going about this..
-export const adjustGhostForEmptyTetrominoArray = (tetromino, yCoord, xCoord, merges, len) => {
-	// console.log(len + tetromino.length);
+export const adjustGhostForEmptyTetrominoArray = (tetromino, len) => {
 	let adjustment = 0;
 	if (len + tetromino.length < 20) {
 		return adjustment;
