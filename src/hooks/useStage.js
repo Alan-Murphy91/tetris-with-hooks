@@ -14,7 +14,7 @@ export const useStage = (player, resetPlayer) => {
 			row.forEach((value, x) => {
 				if(value !== 0 && !isNaN(coordY)) {
 					stage[coordY + y + ghostY][coordX + x] = [
-						value,
+						ghostY > 0 ? 0 : value,
 						`${player.collided ? 'merged' : 'clear'}`,
 						ghostY > 0 ? 'ghost' : '',
 					];
