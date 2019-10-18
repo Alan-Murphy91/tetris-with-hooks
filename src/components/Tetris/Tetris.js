@@ -119,15 +119,9 @@ const Tetris = () => {
 			<StyledTetris>
 				<Stage stage={stage} />
 				<StyledAside>
-				{gameOver ? (
-						<Display gameOver={gameOver} text="Game Over" />
-					) : (
-						<>
-							<Display text={`Score: ${score}`} />
-							<Display text={`Rows: ${rows}`} />
-							<Display text={`Level: ${level}`} />
-						</>
-					)}
+					<Display text={`Score: ${score}`} />
+					<Display text={`Rows: ${rows}`} />
+					<Display text={`Level: ${level}`} />
 					<StartButton callback={startGame} />
 				</StyledAside>
 			</StyledTetris>

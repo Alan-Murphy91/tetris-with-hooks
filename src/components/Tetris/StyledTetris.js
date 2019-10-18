@@ -19,7 +19,6 @@ export const StyledTetrisResponsiveButtonWrapper = styled.div`
 	div {
 		height: 100px;
 		color: white;
-		border: 1px solid red;
 	}
 
 	@media (min-width: 1025px) {
