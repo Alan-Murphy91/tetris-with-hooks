@@ -33,7 +33,6 @@ export const StyledTetris = styled.div`
 	align-items: flex-start;
 	width: 300px;
 	margin: 0 auto;
-
 	aside {
 		padding: 0 20px;
 	}
