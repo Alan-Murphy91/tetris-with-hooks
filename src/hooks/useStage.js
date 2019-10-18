@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 
 import { 
 	createStage, checkCollision, ghostTetrominoIsHigherThanMerge,
-	adjustGhostForEmptyTetrominoArray
 } from '../gameHelpers';
 
 export const useStage = (player, resetPlayer) => {
@@ -72,6 +71,9 @@ export const useStage = (player, resetPlayer) => {
 		);
 
 		for (let i = newStage.length - player.tetromino.length; i > player.pos.y; i -= 1) {
+			if (i <= 5) {
+				break;
+			}
 			const clonedPlayer = JSON.parse(JSON.stringify(player));
 			clonedPlayer.pos.y = 0;
 			
@@ -80,10 +82,7 @@ export const useStage = (player, resetPlayer) => {
 					if((i + clonedPlayer.pos.y - player.pos.y) <= 2) {
 						break;
 					}
-					console.log(i);
-					// const adjustment = adjustGhostForEmptyTetrominoArray(clonedPlayer.tetromino, i);
 					buildTetromino(
-						// player.tetromino, newStage, clonedPlayer.pos.y + adjustment, player.pos.x, i
 						player.tetromino, newStage, clonedPlayer.pos.y, player.pos.x, i
 					);
 					break;

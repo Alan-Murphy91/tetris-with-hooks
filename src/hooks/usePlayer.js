@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 
-import { STAGE_WIDTH, checkCollision } from './../gameHelpers';
+import { 
+	STAGE_WIDTH, checkCollision, checkifRequiresEmptyArrForTransform,
+	checkifMatrixRequiresPop
+} from './../gameHelpers';
 import { TETROMINOS, randomTetromino } from '../tetrominos';
 
 export const usePlayer = () => {
@@ -11,10 +14,12 @@ export const usePlayer = () => {
 	});
 
 	const rotate = (matrix, dir) => {
-		// rows become columns
-		const rotatedTetromino = matrix.map((_, index) =>
+		matrix = checkifRequiresEmptyArrForTransform(matrix);
+		let rotatedTetromino = matrix.map((_, index) =>
 			matrix.map(col => col[index]),
 		);
+
+		rotatedTetromino = checkifMatrixRequiresPop(rotatedTetromino);
 		// reverse row to get rotated matrix
 		if (dir > 0) return rotatedTetromino.map(row => row.reverse());
 		return rotatedTetromino.reverse();

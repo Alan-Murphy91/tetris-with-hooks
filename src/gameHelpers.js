@@ -52,17 +52,33 @@ export const snapTetromino = (stage, player, merges) => {
 	}
 }
 
-// There should be a better way of going about this..
-export const adjustGhostForEmptyTetrominoArray = (tetromino, len) => {
-	let adjustment = 0;
-	if (len + tetromino.length < 20) {
-		return adjustment;
+// the tetrominos need to have the same height and width for transformations. These
+// helper methods determine whether an incoming matrix or a rotated one needs to
+// unshift or push a new empty array
+
+export const checkifRequiresEmptyArrForTransform = matrix => {
+	if (matrix.length === matrix[0].length) {
+		return matrix;
 	}
-	tetromino.shift();
-	for (let i = 0; i < tetromino.length; i += 1) {
-		if (tetromino[i].findIndex(el => el !== 0) === -1) {
-			adjustment += 1;
-		}
+	while (matrix.length < matrix[0].length) {
+		matrix.unshift(Array(matrix[0].length).fill(0));
 	}
-	return adjustment;	
+	return matrix;
 }
+
+export const checkifMatrixRequiresPop = matrix => {
+	let i = matrix.length - 1;
+	while (matrix[i].findIndex(el => el !== 0) === -1) {
+		matrix.pop();
+		i -=1;
+	}
+	return matrix;
+}
+
+// export const checkifMatrixRequiresPop = matrix => {
+// 	if (matrix[matrix.length - 1].findIndex(el => el !== 0) === -1) {
+// 		matrix.pop();
+// 		return matrix;
+// 	}
+// 	return matrix;
+// }

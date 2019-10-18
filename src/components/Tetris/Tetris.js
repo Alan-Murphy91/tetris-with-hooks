@@ -17,6 +17,7 @@ import { StyledTetris, StyledTetrisWrapper, StyledAside } from '../Tetris/Styled
 const Tetris = () => {
 	const [dropTime, setDropTime] = useState(null);
 	const [gameOver, setGameOver] = useState(null);
+	const [canDrop, setCanDrop] = useState(true);
 
 	const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
 	const [stage, setStage, rowsCleared, merges, setMerges] = useStage(player, resetPlayer);
@@ -25,7 +26,7 @@ const Tetris = () => {
 	const startGame = () => {
 		//reset
 		setStage(createStage());
-		setDropTime(1000);
+		setDropTime(800);
 		resetPlayer();
 		setGameOver(false);
 		setScore(0);
@@ -43,7 +44,7 @@ const Tetris = () => {
 	const drop = () => {
 		if (rows > (level + 1) * 10) {
 			setLevel(prev => prev + 1);
-			setDropTime(1000 / (level + 1) + 200);
+			setDropTime(800 / (level + 1) + 200);
 		}
 		if (!checkCollision(player, stage, { x: 0, y: 1})) {
 			updatePlayerPos({x: 0, y: 1, collided: false})
@@ -59,7 +60,7 @@ const Tetris = () => {
 	const keyUp = ({ keyCode }) => {
 		if(!gameOver) {
 			if (keyCode === 40) {
-				setDropTime(1000 / (level + 1) + 200);
+				setDropTime(800 / (level + 1) + 200);
 			}
 		}
 	}
@@ -80,22 +81,24 @@ const Tetris = () => {
 			} else if (keyCode === 38) {
 				playerRotate(stage, 1);
 			} else if (keyCode === 32) {
-				updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true})
-				// console.log('ss',player.tetromino.length, player.pos.y)
+				if (canDrop) {
+					updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true});
+				}
+				setCanDrop(false);
 			}
 		}
 	}
 
-	// useEffect(() => {
-		// console.log('Player', player);
-		// console.log(adjustGhostForEmptyTetrominoArray(player.tetromino, player.pos.y));
-		// updatePlayerPos({x: 0, y: 0, collided: true})
+	useEffect(() => {
+		const timer = setTimeout(() => {
+			setCanDrop(true);
+		}, dropTime);
+		return () => clearTimeout(timer);
+	}, [canDrop])
 
-	// }, [player]); 
-
-	// useInterval(() => {
-	// 	drop();
-	// }, dropTime);
+	useInterval(() => {
+		drop();
+	}, dropTime);
 
 	return (
 		<StyledTetrisWrapper
