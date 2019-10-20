@@ -115,6 +115,8 @@ const Tetris = () => {
 				playerRotate={playerRotate}
 				updatePlayerPos={updatePlayerPos}
 				merges={merges}
+				canDrop={canDrop}
+				setCanDrop={setCanDrop}
 			/>
 			<StyledTetris>
 				<Stage stage={stage} />
@@ -133,6 +135,8 @@ const Tetris = () => {
 				playerRotate={playerRotate}
 				updatePlayerPos={updatePlayerPos}
 				merges={merges}
+				canDrop={canDrop}
+				setCanDrop={setCanDrop}
 			/>		
 			</StyledTetrisWrapper>
 	);

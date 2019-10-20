@@ -9,7 +9,10 @@ import { StyledTetrisResponsiveButtonWrapper } from '../Tetris/StyledTetris';
 
 import { snapTetromino } from '../../gameHelpers';
 
-const TetrisResponsiveButtons = ({ player, stage, dir, movePlayer, playerRotate, updatePlayerPos, merges }) => {
+const TetrisResponsiveButtons = ({ 
+	player, stage, dir, movePlayer, playerRotate, updatePlayerPos, merges,
+	canDrop, setCanDrop
+}) => {
 	return (
 		<StyledTetrisResponsiveButtonWrapper>
 			<div 
@@ -27,8 +30,18 @@ const TetrisResponsiveButtons = ({ player, stage, dir, movePlayer, playerRotate,
 				{dir === -1 ? <IChevronLeft /> : <IChevronRight />}
 			</div>
 			<div 
-				onClick={() => { updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true}) }}
-				onKeyDown={() => { updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true}) }}
+				onClick={() => { 
+					if (canDrop) {
+						updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true}) 
+					}
+					setCanDrop(false);
+				}}
+				onKeyDown={() => {
+					if (canDrop) {
+						updatePlayerPos({x: 0, y: snapTetromino(stage, player, merges), collided: true}) 
+					}
+					setCanDrop(false);
+				}}
 				className="drop"
 			>
 				<IDownArrowCircle />
